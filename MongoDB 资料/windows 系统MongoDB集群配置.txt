@@ -1,0 +1,78 @@
+
+--添加复制集服务a
+sc.exe create OpenXLive.MongoDB_Ad.Shard_a0 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\a\rs0.conf\"" DisplayName= "rs_a0_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_a1 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\a\rs1.conf\"" DisplayName= "rs_a1_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_a2 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\a\rs2.conf\"" DisplayName= "rs_a2_Service" start= "auto"
+
+call mongo.exe 127.0.0.1:10000/admin
+
+--一个简单的复制集最少包括三个节点。 1.primary 2. secondary，3.arbiter节点
+cfg={_id: 'rs_a', members:[{_id:0,host:'127.0.0.1:10000',priority:2}, {_id:1,host:'127.0.0.1:10001',priority:1},{_id:2,host:'127.0.0.1:10002',arbiterOnly:true}]};  
+rs.initiate(cfg);
+
+--复制集
+rs.conf();
+--可查看复制集状态
+rs.status();
+
+
+--添加复制集服务b
+sc.exe create OpenXLive.MongoDB_Ad.Shard_b0 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\b\rs0.conf\"" DisplayName= "rs_b0_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_b1 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\b\rs1.conf\"" DisplayName= "rs_b1_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_b2 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\b\rs2.conf\"" DisplayName= "rs_b2_Service" start= "auto"
+
+call mongo.exe 127.0.0.1:20000/admin
+
+--一个简单的复制集最少包括三个节点。 1.primary 2. secondary，3.arbiter节点
+cfg={_id: 'rs_b', members:[{_id:0,host:'127.0.0.1:20000',priority:2}, {_id:1,host:'127.0.0.1:20001',priority:1},{_id:2,host:'127.0.0.1:20002',arbiterOnly:true}]};  
+rs.initiate(cfg);
+--复制集
+rs.conf();
+--可查看复制集状态
+rs.status();
+
+
+--添加复制集服务c
+sc.exe create OpenXLive.MongoDB_Ad.Shard_c0 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\c\rs0.conf\"" DisplayName= "rs_c0_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_c1 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\c\rs1.conf\"" DisplayName= "rs_c1_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_c2 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\c\rs2.conf\"" DisplayName= "rs_c2_Service" start= "auto"
+
+call mongo.exe 127.0.0.1:30000/admin
+
+--一个简单的复制集最少包括三个节点。 1.primary 2. secondary，3.arbiter节点
+cfg={_id: 'rs_c', members:[{_id:0,host:'127.0.0.1:30000',priority:2}, {_id:1,host:'127.0.0.1:30001',priority:1},{_id:2,host:'127.0.0.1:30002',arbiterOnly:true}]};  
+rs.initiate(cfg);
+
+--复制集
+rs.conf();
+--可查看复制集状态
+rs.status();
+
+
+
+--添加配置服务
+sc.exe create OpenXLive.MongoDB_Ad.Shard_cfg0 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\configsvr\cfgserver_0.conf"" DisplayName= "rs_cfg0_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_cfg1 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\configsvr\cfgserver_1.conf"" DisplayName= "rs_cfg1_Service" start= "auto"
+sc.exe create OpenXLive.MongoDB_Ad.Shard_cfg2 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongod.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\configsvr\cfgserver_2.conf"" DisplayName= "rs_cfg2_Service" start= "auto"
+
+call mongo.exe 127.0.0.1:40000/admin
+cfg={_id: 'configs', members:[{_id:0,host:'127.0.0.1:40000'}, {_id:1,host:'127.0.0.1:40001'},{_id:2,host:'127.0.0.1:40002'}]};  
+rs.initiate(cfg);
+
+--添加路由服务
+sc.exe create rs_mongosr_Service1 binPath= "\"C:\Program Files\MongoDB\Server\3.4\bin\mongos.exe\" --service --config=\"C:\Program Files\MongoDB\Server\3.4\cluster\config\mongos\cfg_mongos.conf"" DisplayName= "rs_mongosr_Service1" start= "auto"
+直接启动
+mongos --config "C:\Program Files\MongoDB\Server\3.4\cluster\config\mongos\cfg_mongos.conf"
+
+
+call mongo.exe 127.0.0.1:50000/admin
+db.runCommand({addshard:"rs_a/127.0.0.1:10000,127.0.0.1:10001",name:"ShardSetA"})
+db.runCommand({addshard:"rs_b/127.0.0.1:20000,127.0.0.1:20001",name:"ShardSetB"})
+db.runCommand({listshards : 1})
+printShardingStatus()
+
+db.runCommand({"enablesharding":"ucloudlink"})
+sh.status()
+
+
+

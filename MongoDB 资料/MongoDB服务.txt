@@ -1,0 +1,26 @@
+1. 启动MongoDB服务
+mongod --config "C:\Program Files\MongoDB\Server\3.4\mongo.conf" 
+
+--添加启动服务
+mongod --config "C:\Program Files\MongoDB\Server\3.4\mongo.conf" --install --serviceName "MongoDB"
+
+--添加带权限认证的
+mongod --config "C:\Program Files\MongoDB\Server\3.4\mongo.conf"  --auth --install --serviceName "MongoDB"
+
+--启动服务
+net start MongoDB
+
+--删除服务
+mongod.exe --remove --serviceName "MongoDB"
+
+
+
+--授权
+--创建角色
+db.createRole({role: "mongostatRole",privileges: [{ resource: { cluster: true }, actions: [ "serverStatus" ] }],roles: []})
+--授权用户角色
+db.grantRolesToUser("admin",[{role: "mongostatRole",db: "admin"}])
+
+mongostat --host=127.0.0.1:27017 -u admin -p admin --authenticationDatabase=admin
+
+mongotop --host=127.0.0.1:27017 -u admin -p admin --authenticationDatabase=admin
