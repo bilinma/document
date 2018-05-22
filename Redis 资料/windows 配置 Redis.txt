@@ -1,0 +1,8 @@
+
+redis-server.exe --service-install redis.windows.conf --loglevel verbose  
+
+
+redis-server --service-uninstall 
+
+
+redis-server.exe redis.windows.conf  
