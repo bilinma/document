@@ -1,8 +1,9 @@
 
+#创建Redis 服务
 redis-server.exe --service-install redis.windows.conf --loglevel verbose  
 
-
+#删除redis 服务
 redis-server --service-uninstall 
 
-
+#启动redis 服务
 redis-server.exe redis.windows.conf  
