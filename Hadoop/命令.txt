@@ -1,0 +1,11 @@
+hadoop fs -mkdir /input		新建hadoop hdfs文件系统上的input文件夹（输入文件存放）
+
+hadoop fs -put test.txt /input		传入测试文件
+
+hadoop jar %HADOOP_HOME%/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.0.3.jar wordcount /input /output 	运行wordcount示例
+
+hadoop fs -ls /		查看hadoop文件系统目录
+
+hadoop fs -cat /output/part-r-00000		查看part-r-00000 文件夹中的运行结果
+
+hadoop dfs -cat /output/* 	查看所有文件
